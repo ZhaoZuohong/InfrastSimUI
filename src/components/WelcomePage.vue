@@ -68,7 +68,7 @@ const loading = ref(false)
 async function enter() {
   loading.value = true
   const simulator = await new WasmSimulator().ready()
-  state.value = simulator.get_data()
+  state.value = simulator.get_data_for_mower()
   console.log(state.value)
   loading.value = false
   show.value = false

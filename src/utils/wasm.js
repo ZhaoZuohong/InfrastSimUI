@@ -35,4 +35,8 @@ export class WasmSimulator {
   get_data() {
     return JSON.parse(this.#service.GetData(this.#id))
   }
+
+  get_data_for_mower() {
+    return JSON.parse(this.#service.GetDataForMower(this.#id))
+  }
 }
