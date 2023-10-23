@@ -61,15 +61,15 @@ const links = {
 }
 
 import { WasmSimulator } from '../utils/wasm'
+const simulator = inject('simulator')
 
 const state = inject('state')
 const loading = ref(false)
 
 async function enter() {
   loading.value = true
-  const simulator = await new WasmSimulator().ready()
-  state.value = simulator.get_data_for_mower()
-  console.log(state.value)
+  simulator.value = await new WasmSimulator().ready()
+  state.value = simulator.value.get_data()
   loading.value = false
   show.value = false
 }

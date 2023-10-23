@@ -37,7 +37,7 @@ const initial_state = computed(() => {
       }
       return {
         type: '',
-        level: 1
+        level: 3
       }
     })
   }
@@ -132,6 +132,28 @@ function get_display_name(facility, state) {
   }
   return '无'
 }
+
+const loading = ref(false)
+const simulator = inject('simulator')
+
+function operate() {
+  loading.value = true
+  for (const facility in operations.value) {
+    if (facility.startsWith('B')) {
+      simulator.value.set_facility_state(facility, {
+        level: operations.value[facility].after.level,
+        type: operations.value[facility].after.type
+      })
+    } else {
+      simulator.value.set_facility_state(facility, {
+        level: operations.value[facility].after
+      })
+    }
+  }
+  state.value = simulator.value.get_data()
+  loading.value = false
+  construction_mode.value = false
+}
 </script>
 
 <template>
@@ -189,7 +211,7 @@ function get_display_name(facility, state) {
           />
         </div>
       </div>
-      <n-table :single-line="false" size="small">
+      <n-table :single-line="false" size="small" v-if="Object.keys(operations).length">
         <thead>
           <tr>
             <th>设施</th>
@@ -207,8 +229,10 @@ function get_display_name(facility, state) {
       </n-table>
     </n-scrollbar>
     <div class="bottom-line">
-      <n-button type="primary">确认</n-button>
-      <n-button>取消</n-button>
+      <n-button type="primary" @click="operate" :loading="loading" :disabled="loading">
+        确认
+      </n-button>
+      <n-button @click="construction_mode = false">取消</n-button>
     </div>
   </n-modal>
 </template>
@@ -246,7 +270,7 @@ function get_display_name(facility, state) {
 
 .n-table {
   width: 600px;
-  margin: 24px auto;
+  margin: 24px auto 0 auto;
   th,
   td {
     padding: 6px 12px;
@@ -257,5 +281,6 @@ function get_display_name(facility, state) {
   display: flex;
   gap: 8px;
   justify-content: center;
+  margin-top: 24px;
 }
 </style>
