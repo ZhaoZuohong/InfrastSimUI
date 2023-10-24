@@ -140,10 +140,15 @@ function operate() {
   loading.value = true
   for (const facility in operations.value) {
     if (facility.startsWith('B')) {
-      simulator.value.set_facility_state(facility, {
-        level: operations.value[facility].after.level,
-        type: operations.value[facility].after.type
-      })
+      if (operations.value[facility].after.type)
+        simulator.value.set_facility_state(facility, {
+          level: operations.value[facility].after.level,
+          type: operations.value[facility].after.type
+        })
+      else
+        simulator.value.set_facility_state(facility, {
+          destroy: null
+        })
     } else {
       simulator.value.set_facility_state(facility, {
         level: operations.value[facility].after
