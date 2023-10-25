@@ -3,6 +3,8 @@ import { inject, ref, computed, watch } from 'vue'
 const construction_mode = inject('construction_mode')
 const state = inject('state')
 
+import { get_display_name, get_left_location } from '@/utils/display'
+
 const options5 = [
   { label: '不建', value: 0 },
   { label: '1级', value: 1 },
@@ -22,7 +24,7 @@ const left_options3 = options3.slice(1, 4)
 
 const initial_state = computed(() => {
   return {
-    control_center: state.value['control-center'].level,
+    'control-center': state.value['control-center'].level,
     reception: state.value.reception.level,
     crafting: state.value.crafting.level,
     office: state.value.office.level,
@@ -47,7 +49,7 @@ const new_state = ref({})
 
 function get_new_state() {
   new_state.value = {
-    control_center: initial_state.value.control_center,
+    'control-center': initial_state.value['control-center'],
     reception: initial_state.value.reception,
     crafting: initial_state.value.crafting,
     office: initial_state.value.office,
@@ -65,7 +67,7 @@ watch(construction_mode, (new_value) => {
 
 const operations = computed(() => {
   const result = {}
-  for (const facility of ['control_center', 'reception', 'crafting', 'office', 'training']) {
+  for (const facility of ['control-center', 'reception', 'crafting', 'office', 'training']) {
     if (new_state.value[facility] != initial_state.value[facility]) {
       result[facility] = {
         before: initial_state.value[facility],
@@ -87,7 +89,7 @@ const operations = computed(() => {
       (initial_state.value.left_side[i].type &&
         initial_state.value.left_side[i].level != new_state.value.left_side[i].level)
     ) {
-      result[`B${Math.floor(i / 3) + 1}0${(i % 3) + 1}`] = {
+      result[get_left_location(i)] = {
         before: initial_state.value.left_side[i],
         after: new_state.value.left_side[i]
       }
@@ -96,43 +98,6 @@ const operations = computed(() => {
   return result
 })
 
-function get_display_name(facility, state) {
-  const left_display_name = {
-    Trading: '贸易站',
-    Manufacturing: '制造站',
-    Power: '发电站'
-  }
-
-  const right_display_name = {
-    reception: '会客室',
-    crafting: '加工站',
-    office: '办公室',
-    training: '训练室',
-    control_center: '控制中枢'
-  }
-
-  if (state != null) {
-    if (facility in right_display_name) {
-      if (state) return `${state}级${right_display_name[facility]}`
-      else return '未建造'
-    }
-    if (facility.startsWith('dormitory')) {
-      if (state) return `${state}级宿舍`
-      else return '未建造'
-    }
-    if (facility.startsWith('B')) {
-      if (state.type) return `${state.level}级${left_display_name[state.type]}`
-      else return '未建造'
-    }
-  } else {
-    if (facility in left_display_name) return left_display_name[facility]
-    else if (facility in right_display_name) return right_display_name[facility]
-    else if (facility.startsWith('dormitory')) return `宿舍${facility.slice(-1)}`
-    return facility
-  }
-  return '无'
-}
-
 const loading = ref(false)
 const simulator = inject('simulator')
 
@@ -140,22 +105,29 @@ function operate() {
   loading.value = true
   for (const facility in operations.value) {
     if (facility.startsWith('B')) {
-      if (operations.value[facility].after.type)
+      if (
+        operations.value[facility].before.type &&
+        operations.value[facility].before.type == operations.value[facility].after.type
+      ) {
         simulator.value.set_facility_state(facility, {
-          level: operations.value[facility].after.level,
-          type: operations.value[facility].after.type
+          level: operations.value[facility].after.level
         })
-      else
+      } else {
         simulator.value.set_facility_state(facility, {
           destroy: null
         })
+        simulator.value.set_facility_state(facility, {
+          type: operations.value[facility].after.type,
+          level: operations.value[facility].after.level
+        })
+      }
     } else {
       simulator.value.set_facility_state(facility, {
         level: operations.value[facility].after
       })
     }
   }
-  state.value = simulator.value.get_data()
+  state.value = simulator.value.get_data_for_mower()
   loading.value = false
   construction_mode.value = false
 }
@@ -176,7 +148,7 @@ function operate() {
       <div class="container">
         <div :style="{ 'grid-row': 1, 'grid-column': 4 }">
           <span class="w-70">控制中枢</span>
-          <n-select v-model:value="new_state.control_center" :options="options5" />
+          <n-select v-model:value="new_state['control-center']" :options="options5" />
         </div>
         <div
           v-for="(_, idx) in new_state.dormitories"
@@ -207,7 +179,7 @@ function operate() {
           :key="idx"
           :style="{ 'grid-row': Math.floor(idx / 3) + 2, 'grid-column': (idx % 3) + 1 }"
         >
-          <span>B{{ Math.floor(idx / 3) + 1 }}0{{ (idx % 3) + 1 }}</span>
+          <span>{{ get_left_location(idx) }}</span>
           <n-select v-model:value="facility.type" :options="left_options" />
           <n-select
             :disabled="!facility.type"

@@ -60,7 +60,7 @@ const links = {
   'arknights-mower': 'https://github.com/ArkMowers/arknights-mower'
 }
 
-import { WasmSimulator } from '../utils/wasm'
+import { WasmSimulator } from '@/utils/wasm'
 const simulator = inject('simulator')
 
 const state = inject('state')
@@ -69,7 +69,7 @@ const loading = ref(false)
 async function enter() {
   loading.value = true
   simulator.value = await new WasmSimulator().ready()
-  state.value = simulator.value.get_data()
+  state.value = simulator.value.get_data_for_mower()
   loading.value = false
   show.value = false
 }
