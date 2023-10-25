@@ -15,7 +15,7 @@ dotnet workload install wasm-tools
 dotnet publish InfrastSimWasm
 ```
 
-将 `InfrastSimWasm/bin/Release/net8.0/browser-wasm/AppBundle/_framework` 复制为此项目的 `public/wasm`
+将 `InfrastSimWasm/bin/Release/net8.0/browser-wasm/AppBundle/_framework` 复制为此项目的 `public/assets`，并复制或软链接到 `src/wasm`
 
 安装依赖，运行开发服务器：
 

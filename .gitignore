@@ -1,5 +1,6 @@
 # InfrastSimWASM
-/public/wasm/
+/public/assets
+/src/wasm
 
 # Logs
 logs

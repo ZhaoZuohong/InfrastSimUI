@@ -1,4 +1,4 @@
-import { dotnet } from '/wasm/dotnet.js?url'
+import { dotnet } from '@/wasm/dotnet'
 
 export class WasmSimulator {
   promise_ready
