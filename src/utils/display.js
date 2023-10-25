@@ -87,3 +87,13 @@ export function get_left_index(location) {
   const col = parseInt(location.slice(3, 4))
   return (row - 1) * 3 + col - 1
 }
+
+export function facility_name_list(operators) {
+  return JSON.parse(JSON.stringify(operators)).map((x) => {
+    if (x) {
+      return x.name
+    } else {
+      return ''
+    }
+  })
+}

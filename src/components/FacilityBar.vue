@@ -1,22 +1,11 @@
 <script setup>
 import { inject } from 'vue'
-const active_facility = inject('active_facility')
-import { get_display_name } from '@/utils/display'
-const facility_state = inject('facility_state')
 const select_operator = inject('select_operator')
 </script>
 
 <template>
   <div class="facility-bar">
-    <n-h2>
-      {{ get_display_name(facility_state.type) }}
-      <template v-if="active_facility.startsWith('B')">
-        {{ active_facility }}
-      </template>
-      <template v-if="active_facility.startsWith('dormitory')">
-        {{ parseInt(active_facility.slice(-1)) + 1 }}
-      </template>
-    </n-h2>
+    <n-h2><active-facility-name /></n-h2>
     <div class="info">
       <div>等级：3</div>
       <div>容量：54+28=82</div>

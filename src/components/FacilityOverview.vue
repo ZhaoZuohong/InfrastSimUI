@@ -17,6 +17,8 @@ const button_type = {
 }
 
 const active_facility = inject('active_facility')
+
+import { facility_name_list } from '@/utils/display'
 </script>
 
 <template>
@@ -30,7 +32,10 @@ const active_facility = inject('active_facility')
         :style="{ 'grid-column': (i % 3) + 2, 'grid-row': Math.floor(i / 3) + 2 }"
         @click="active_facility = get_left_location(i)"
       >
-        {{ get_display_name(facility.type) }}（{{ facility.level }}级）
+        <facility-avatar
+          :facility="`${get_display_name(facility.type)}（${facility.level}级）`"
+          :operators="facility_name_list(facility.operators)"
+        />
       </n-button>
       <n-button
         v-else
@@ -43,11 +48,14 @@ const active_facility = inject('active_facility')
     <template v-for="(dormitory, i) in state.dormitories" :key="i">
       <n-button
         v-if="dormitory.level"
-        :secondary="active_facility != `dormitory${i}`"
+        :secondary="active_facility != `dormitory ${i + 1}`"
         :style="{ 'grid-column': 5, 'grid-row': i + 2 }"
-        @click="active_facility = `dormitory ${i}`"
+        @click="active_facility = `dormitory ${i + 1}`"
       >
-        宿舍{{ i + 1 }}（{{ dormitory.level }}级）
+        <facility-avatar
+          :facility="`宿舍${i + 1}（${dormitory.level}级）`"
+          :operators="facility_name_list(dormitory.operators)"
+        />
       </n-button>
       <n-button v-else dashed :style="{ 'grid-column': 5, 'grid-row': i + 2 }">待建造</n-button>
     </template>
@@ -63,9 +71,13 @@ const active_facility = inject('active_facility')
         }
       "
     >
-      {{ facility.display }}（{{
-        state[facility.name].level ? `${state[facility.name].level}级` : '未建造'
-      }}）
+      <template v-if="state[facility.name].level > 0">
+        <facility-avatar
+          :facility="`${facility.display}（${state[facility.name].level}级）`"
+          :operators="facility_name_list(state[facility.name].operators)"
+        />
+      </template>
+      <template v-else> {{ facility.display }}（未建造） </template>
     </n-button>
   </div>
 </template>

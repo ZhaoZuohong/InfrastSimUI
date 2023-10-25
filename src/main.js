@@ -65,7 +65,7 @@ app.provide('select_operator', ref(false))
 import { get_left_index } from '@/utils/display'
 const facility_state = computed(() => {
   if (active_facility.value.startsWith('dormitory')) {
-    return state.value.dormitories[parseInt(active_facility.value.slice(-1))]
+    return state.value.dormitories[parseInt(active_facility.value.slice(-1)) - 1]
   } else if (active_facility.value.startsWith('B')) {
     return state.value['modifiable-facilities'][get_left_index(active_facility.value)]
   } else {

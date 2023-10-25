@@ -16,16 +16,11 @@ const operator_list = computed(() => {
 })
 
 const operators = ref([])
+import { facility_name_list } from '@/utils/display'
 
 watch(select_operator, (new_value) => {
   if (new_value) {
-    operators.value = JSON.parse(JSON.stringify(facility_state.value.operators)).map((x) => {
-      if (x) {
-        return x.name
-      } else {
-        return ''
-      }
-    })
+    operators.value = facility_name_list(facility_state.value.operators)
   }
 })
 
@@ -62,7 +57,7 @@ function operate() {
     :style="{ width: '600px' }"
   >
     <template #header>
-      <div class="card-title">进驻干员</div>
+      <div class="card-title">进驻干员（<active-facility-name />）</div>
     </template>
     <n-table :single-line="false">
       <thead>
@@ -72,7 +67,7 @@ function operate() {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(operator, idx) in operators" :key="idx">
+        <tr v-for="(_, idx) in operators" :key="idx">
           <td>
             {{ facility_state.operators[idx] ? facility_state.operators[idx].name : '（无）' }}
           </td>
@@ -83,7 +78,7 @@ function operate() {
       </tbody>
     </n-table>
     <div class="bottom-line">
-      <n-button type="primary" @click="operate"> 确认 </n-button>
+      <n-button type="primary" @click="operate">确认</n-button>
       <n-button @click="select_operator = false">取消</n-button>
     </div>
   </n-modal>

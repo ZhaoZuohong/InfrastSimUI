@@ -99,8 +99,10 @@ const operations = computed(() => {
 })
 
 const simulator = inject('simulator')
+const active_facility = inject('active_facility')
 
 function operate() {
+  active_facility.value = ''
   construction_mode.value = false
   for (const facility in operations.value) {
     if (facility.startsWith('B')) {
@@ -203,7 +205,7 @@ function operate() {
       </n-table>
     </n-scrollbar>
     <div class="bottom-line">
-      <n-button type="primary" @click="operate"> 确认 </n-button>
+      <n-button type="primary" @click="operate">确认</n-button>
       <n-button @click="construction_mode = false">取消</n-button>
     </div>
   </n-modal>
