@@ -1,6 +1,31 @@
+<script setup>
+import { inject, computed } from 'vue'
+const active_facility = inject('active_facility')
+const state = inject('state')
+import { get_left_index, get_display_name } from '@/utils/display'
+
+const facility = computed(() => {
+  if (active_facility.value.startsWith('dormitory')) {
+    return state.value.dormitories[parseInt(active_facility.value.slice(-1))]
+  } else if (active_facility.value.startsWith('B')) {
+    return state.value['modifiable-facilities'][get_left_index(active_facility.value)]
+  } else {
+    return state.value[active_facility.value]
+  }
+})
+</script>
+
 <template>
   <div class="facility-bar">
-    <n-h2>制造站 B101</n-h2>
+    <n-h2>
+      {{ get_display_name(facility.type) }}
+      <template v-if="active_facility.startsWith('B')">
+        {{ active_facility }}
+      </template>
+      <template v-if="active_facility.startsWith('dormitory')">
+        {{ parseInt(active_facility.slice(-1)) + 1 }}
+      </template>
+    </n-h2>
     <div class="info">
       <div>等级：3</div>
       <div>容量：54+28=82</div>

@@ -2,13 +2,14 @@
 import { inject } from 'vue'
 
 const construction_mode = inject('construction_mode')
+const state = inject('state')
 </script>
 
 <template>
   <div class="top-bar">
     <div>
       <n-h1>基建模拟器</n-h1>
-      <div>无人机：0</div>
+      <div>无人机：{{ state.drones }}</div>
     </div>
     <div>
       <n-input-number :show-button="false" placeholder="请输入模拟时间">

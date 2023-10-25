@@ -37,9 +37,14 @@ const right_display_name = Object.fromEntries(
 
 export function get_display_name(facility, state) {
   const left_display_name = {
-    Trading: '贸易站',
-    Manufacturing: '制造站',
-    Power: '发电站'
+    trading: '贸易站',
+    manufacturing: '制造站',
+    power: '发电站'
+  }
+
+  facility = facility.toLowerCase()
+  if (facility == 'controlcenter') {
+    facility = 'control-center'
   }
 
   if (state != null) {
@@ -58,7 +63,13 @@ export function get_display_name(facility, state) {
   } else {
     if (facility in left_display_name) return left_display_name[facility]
     else if (facility in right_display_name) return right_display_name[facility]
-    else if (facility.startsWith('dormitory')) return `宿舍${facility.slice(-1)}`
+    else if (facility.startsWith('dormitory')) {
+      let result = '宿舍'
+      if (facility != 'dormitory') {
+        result += facility.slice(-1)
+      }
+      return result
+    }
     return facility
   }
   return '无'
@@ -66,4 +77,13 @@ export function get_display_name(facility, state) {
 
 export function get_left_location(idx) {
   return `B${Math.floor(idx / 3) + 1}0${(idx % 3) + 1}`
+}
+
+export function get_left_index(location) {
+  if (!location.startsWith('B')) {
+    return -1
+  }
+  const row = parseInt(location.slice(1, 2))
+  const col = parseInt(location.slice(3, 4))
+  return (row - 1) * 3 + col - 1
 }

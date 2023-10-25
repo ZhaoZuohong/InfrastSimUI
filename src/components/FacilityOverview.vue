@@ -3,13 +3,20 @@ import { inject } from 'vue'
 
 const state = inject('state')
 
-import { get_display_name, facility_location } from '@/utils/display'
+import {
+  get_display_name,
+  facility_location,
+  get_left_location,
+  get_left_index
+} from '@/utils/display'
 
 const button_type = {
   Trading: 'info',
   Manufacturing: 'warning',
   Power: 'primary'
 }
+
+const active_facility = inject('active_facility')
 </script>
 
 <template>
@@ -17,9 +24,11 @@ const button_type = {
     <template v-for="(facility, i) in state['modifiable-facilities']" :key="i">
       <n-button
         v-if="facility"
-        secondary
+        :ghost="get_left_index(active_facility) == i"
+        :secondary="get_left_index(active_facility) != i"
         :type="button_type[facility.type]"
         :style="{ 'grid-column': (i % 3) + 2, 'grid-row': Math.floor(i / 3) + 2 }"
+        @click="active_facility = get_left_location(i)"
       >
         {{ get_display_name(facility.type) }}（{{ facility.level }}级）
       </n-button>
@@ -32,7 +41,12 @@ const button_type = {
       </n-button>
     </template>
     <template v-for="(dormitory, i) in state.dormitories" :key="i">
-      <n-button v-if="dormitory.level" secondary :style="{ 'grid-column': 5, 'grid-row': i + 2 }">
+      <n-button
+        v-if="dormitory.level"
+        :secondary="active_facility != `dormitory${i}`"
+        :style="{ 'grid-column': 5, 'grid-row': i + 2 }"
+        @click="active_facility = `dormitory${i}`"
+      >
         宿舍{{ i + 1 }}（{{ dormitory.level }}级）
       </n-button>
       <n-button v-else dashed :style="{ 'grid-column': 5, 'grid-row': i + 2 }">待建造</n-button>
@@ -40,9 +54,14 @@ const button_type = {
     <n-button
       v-for="facility in facility_location"
       :key="facility.name"
-      :secondary="state[facility.name].level > 0"
+      :secondary="state[facility.name].level > 0 && active_facility != facility.name"
       :dashed="!state[facility.name].level"
       :style="{ 'grid-column': facility.col, 'grid-row': facility.row }"
+      @click="
+        () => {
+          if (state[facility.name].level) active_facility = facility.name
+        }
+      "
     >
       {{ facility.display }}（{{
         state[facility.name].level ? `${state[facility.name].level}级` : '未建造'

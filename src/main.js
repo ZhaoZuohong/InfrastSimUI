@@ -59,6 +59,7 @@ app.provide(
     'modifiable-facilities': [null, null, null, null, null, null, null, null, null]
   })
 )
+app.provide('active_facility', ref(''))
 app.provide('construction_mode', ref(false))
 
 app.mount('#app')

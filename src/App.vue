@@ -1,5 +1,7 @@
 <script setup>
 import { zhCN, dateZhCN } from 'naive-ui'
+import { inject } from 'vue'
+const active_facility = inject('active_facility')
 </script>
 
 <template>
@@ -17,8 +19,8 @@ import { zhCN, dateZhCN } from 'naive-ui'
       <div class="main">
         <n-scrollbar>
           <facility-overview />
-          <facility-bar />
-          <facility-detail />
+          <facility-bar v-if="active_facility" />
+          <facility-detail v-if="active_facility" />
         </n-scrollbar>
       </div>
     </div>
