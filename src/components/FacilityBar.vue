@@ -1,24 +1,15 @@
 <script setup>
-import { inject, computed } from 'vue'
+import { inject } from 'vue'
 const active_facility = inject('active_facility')
-const state = inject('state')
-import { get_left_index, get_display_name } from '@/utils/display'
-
-const facility = computed(() => {
-  if (active_facility.value.startsWith('dormitory')) {
-    return state.value.dormitories[parseInt(active_facility.value.slice(-1))]
-  } else if (active_facility.value.startsWith('B')) {
-    return state.value['modifiable-facilities'][get_left_index(active_facility.value)]
-  } else {
-    return state.value[active_facility.value]
-  }
-})
+import { get_display_name } from '@/utils/display'
+const facility_state = inject('facility_state')
+const select_operator = inject('select_operator')
 </script>
 
 <template>
   <div class="facility-bar">
     <n-h2>
-      {{ get_display_name(facility.type) }}
+      {{ get_display_name(facility_state.type) }}
       <template v-if="active_facility.startsWith('B')">
         {{ active_facility }}
       </template>
@@ -35,7 +26,7 @@ const facility = computed(() => {
       <div>进度：31%</div>
       <div>剩余时间：<n-time format="HH:mm" /></div>
     </div>
-    <n-button>进驻干员</n-button>
+    <n-button @click="select_operator = true">进驻干员</n-button>
     <n-button>无人机加速</n-button>
     <n-button>变更产物</n-button>
     <n-button>收取产物</n-button>
@@ -62,6 +53,7 @@ const facility = computed(() => {
   display: flex;
   flex-wrap: wrap;
   flex-shrink: 2;
+  flex-grow: 1;
   gap: 4px 24px;
 }
 </style>

@@ -42,31 +42,31 @@ export function get_display_name(facility, state) {
     power: '发电站'
   }
 
-  facility = facility.toLowerCase()
-  if (facility == 'controlcenter') {
-    facility = 'control-center'
+  let lower_facility = facility.toLowerCase()
+  if (lower_facility == 'controlcenter') {
+    lower_facility = 'control-center'
   }
 
   if (state != null) {
-    if (facility in right_display_name) {
-      if (state) return `${state}级${right_display_name[facility]}`
+    if (lower_facility in right_display_name) {
+      if (state) return `${state}级${right_display_name[lower_facility]}`
       else return '未建造'
     }
-    if (facility.startsWith('dormitory')) {
+    if (lower_facility.startsWith('dormitory')) {
       if (state) return `${state}级宿舍`
       else return '未建造'
     }
-    if (facility.startsWith('B')) {
-      if (state.type) return `${state.level}级${left_display_name[state.type]}`
+    if (lower_facility.startsWith('b')) {
+      if (state.type) return `${state.level}级${left_display_name[state.type.toLowerCase()]}`
       else return '未建造'
     }
   } else {
-    if (facility in left_display_name) return left_display_name[facility]
-    else if (facility in right_display_name) return right_display_name[facility]
-    else if (facility.startsWith('dormitory')) {
+    if (lower_facility in left_display_name) return left_display_name[lower_facility]
+    else if (lower_facility in right_display_name) return right_display_name[lower_facility]
+    else if (lower_facility.startsWith('dormitory')) {
       let result = '宿舍'
-      if (facility != 'dormitory') {
-        result += facility.slice(-1)
+      if (lower_facility != 'dormitory') {
+        result += lower_facility.slice(-1)
       }
       return result
     }

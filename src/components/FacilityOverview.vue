@@ -45,7 +45,7 @@ const active_facility = inject('active_facility')
         v-if="dormitory.level"
         :secondary="active_facility != `dormitory${i}`"
         :style="{ 'grid-column': 5, 'grid-row': i + 2 }"
-        @click="active_facility = `dormitory${i}`"
+        @click="active_facility = `dormitory ${i}`"
       >
         宿舍{{ i + 1 }}（{{ dormitory.level }}级）
       </n-button>

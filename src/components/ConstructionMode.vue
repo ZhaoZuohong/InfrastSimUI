@@ -98,11 +98,10 @@ const operations = computed(() => {
   return result
 })
 
-const loading = ref(false)
 const simulator = inject('simulator')
 
 function operate() {
-  loading.value = true
+  construction_mode.value = false
   for (const facility in operations.value) {
     if (facility.startsWith('B')) {
       if (
@@ -128,8 +127,6 @@ function operate() {
     }
   }
   state.value = simulator.value.get_data_for_mower()
-  loading.value = false
-  construction_mode.value = false
 }
 </script>
 
@@ -206,9 +203,7 @@ function operate() {
       </n-table>
     </n-scrollbar>
     <div class="bottom-line">
-      <n-button type="primary" @click="operate" :loading="loading" :disabled="loading">
-        确认
-      </n-button>
+      <n-button type="primary" @click="operate"> 确认 </n-button>
       <n-button @click="construction_mode = false">取消</n-button>
     </div>
   </n-modal>
