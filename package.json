@@ -21,7 +21,6 @@
     "naive-ui": "^2.35.0",
     "prettier": "^3.0.3",
     "sass": "^1.69.4",
-    "unplugin-auto-import": "^0.16.6",
     "unplugin-vue-components": "^0.25.2",
     "vite": "^4.4.11"
   }
