@@ -1,19 +1,34 @@
 <script setup>
 import { inject } from 'vue'
 const select_operator = inject('select_operator')
+const facility_state = inject('facility_state')
 </script>
 
 <template>
   <div class="facility-bar">
     <n-h2><active-facility-name /></n-h2>
     <div class="info">
-      <div>等级：3</div>
-      <div>容量：54+28=82</div>
-      <div>效率：1.03+1.08=2.11</div>
-      <div>产物：中级作战记录</div>
-      <div>已完成：3</div>
-      <div>进度：31%</div>
-      <div>剩余时间：<n-time format="HH:mm" /></div>
+      <div>等级：{{ facility_state.level }}</div>
+      <template v-if="facility_state.type == 'Manufacturing'">
+        <div>
+          容量：{{ facility_state.capacity }}（工作站{{ facility_state['base-capacity'] }}+干员{{
+            facility_state.capacity - facility_state['base-capacity']
+          }}）
+        </div>
+        <div>
+          效率：{{
+            (facility_state['base-efficiency'] + facility_state['operators-efficiency']).toFixed(2)
+          }}（工作站{{ facility_state['base-efficiency'].toFixed(2) }}+干员{{
+            facility_state['operators-efficiency'].toFixed(2)
+          }}）
+        </div>
+        <div>产物：{{ facility_state['product'] || '未设定' }}</div>
+        <template v-if="facility_state['product']">
+          <div>已完成：{{ facility_state['product-count'] }}</div>
+          <div>进度：{{ Math.round(facility_state.progress * 100) }}%</div>
+          <div>剩余时间：<n-time format="HH:mm" /></div>
+        </template>
+      </template>
     </div>
     <n-button @click="select_operator = true">进驻干员</n-button>
     <n-button>无人机加速</n-button>
@@ -24,7 +39,7 @@ const select_operator = inject('select_operator')
 
 <style scoped>
 .n-h2 {
-  margin: 0;
+  margin: 0 8px 0 0;
   white-space: nowrap;
 }
 

@@ -20,8 +20,8 @@ const state = inject('state')
     </div>
     <div>
       <n-button>收益统计</n-button>
-      <n-button>配置干员</n-button>
       <n-button @click="construction_mode = true">建造模式</n-button>
+      <n-button>配置干员</n-button>
       <n-button>理智充无人机</n-button>
       <n-button>撤下干员</n-button>
       <n-button>收取全部产物</n-button>
