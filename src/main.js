@@ -7,6 +7,8 @@ app.provide('simulator', ref({}))
 const state = ref({
   time: Date.now(),
   drones: 0,
+  'drones-efficiency': 1,
+  'global-properties': {},
   'control-center': {
     type: 'ControlCenter',
     level: 0,

@@ -19,6 +19,7 @@ const active_facility = inject('active_facility')
       <div class="main">
         <n-scrollbar>
           <facility-overview />
+          <global-property />
           <facility-bar v-if="active_facility" />
           <facility-detail v-if="active_facility" />
         </n-scrollbar>
@@ -70,6 +71,7 @@ body {
 .main {
   grid-area: main;
   overflow: hidden;
+  position: relative;
 }
 
 .n-divider {
