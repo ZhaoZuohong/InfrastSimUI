@@ -76,4 +76,10 @@ const facility_state = computed(() => {
 })
 app.provide('facility_state', facility_state)
 
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+
+app.use(VueAxios, axios)
+app.provide('axios', app.config.globalProperties.axios)
+
 app.mount('#app')

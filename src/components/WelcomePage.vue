@@ -33,8 +33,7 @@ const initial_options = [
   },
   {
     label: '载入预设',
-    value: 'preset',
-    disabled: true
+    value: 'preset'
   },
   {
     label: '从本地导入状态',
@@ -43,15 +42,55 @@ const initial_options = [
   }
 ]
 
-const preset = ref('252')
+const preset = ref('252T21')
 const presets = [
   {
-    label: '右满252 21贸',
-    value: '252'
+    value: 'P2',
+    label: '2电站',
+    children: [
+      {
+        label: '右满252 21贸',
+        value: '252T21'
+      },
+      {
+        label: '右满252 11贸',
+        value: '252T11'
+      },
+      {
+        label: '右满252 31贸',
+        value: '252T31'
+      },
+      {
+        label: '右满252 32贸',
+        value: '252T32'
+      },
+      {
+        label: '右满342 321贸',
+        value: '342T321'
+      },
+      {
+        label: '右满342 222贸',
+        value: '342T222'
+      }
+    ]
   },
   {
-    label: '243',
-    value: '243'
+    value: 'P3',
+    label: '3电站',
+    children: [
+      {
+        label: '243',
+        value: '243'
+      },
+      {
+        label: '153',
+        value: '153'
+      },
+      {
+        label: '333',
+        value: '333'
+      }
+    ]
   }
 ]
 
@@ -66,9 +105,17 @@ const simulator = inject('simulator')
 const state = inject('state')
 const loading = ref(false)
 
+const axios = inject('axios')
+
 async function enter() {
   loading.value = true
   simulator.value = await new WasmSimulator().ready()
+  if (initial.value == 'preset') {
+    const { data } = await axios.get(`/presets/${preset.value}.json`)
+    for (const [facility, state] of Object.entries(data)) {
+      simulator.value.set_facility_state(facility, state)
+    }
+  }
   state.value = simulator.value.get_data_for_mower()
   loading.value = false
   show.value = false
@@ -110,7 +157,7 @@ async function enter() {
           </n-upload>
         </n-form-item>
         <n-form-item label="预设" v-if="initial == 'preset'">
-          <n-select v-model:value="preset" :options="presets" />
+          <n-cascader v-model:value="preset" :options="presets" check-strategy="child" />
         </n-form-item>
       </n-form>
       <n-button type="primary" @click="enter" :loading="loading" :disabled="loading">

@@ -1,0 +1,65 @@
+{
+  "Control Center": {
+    "level": 5
+  },
+  "B103": {
+    "type": "Power",
+    "level": 3
+  },
+  "B203": {
+    "type": "Power",
+    "level": 3
+  },
+  "B301": {
+    "type": "Manufacturing",
+    "level": 2
+  },
+  "B102": {
+    "type": "Trading",
+    "level": 3
+  },
+  "B101": {
+    "type": "Trading",
+    "level": 2
+  },
+  "B201": {
+    "type": "Trading",
+    "level": 1
+  },
+  "B202": {
+    "type": "Manufacturing",
+    "level": 3
+  },
+  "B302": {
+    "type": "Manufacturing",
+    "level": 3
+  },
+  "B303": {
+    "type": "Manufacturing",
+    "level": 3
+  },
+  "Dormitory 1": {
+    "level": 1
+  },
+  "Dormitory 2": {
+    "level": 1
+  },
+  "Dormitory 3": {
+    "level": 1
+  },
+  "Dormitory 4": {
+    "level": 1
+  },
+  "Reception": {
+    "level": 3
+  },
+  "Crafting": {
+    "level": 3
+  },
+  "Office": {
+    "level": 3
+  },
+  "Training": {
+    "level": 3
+  }
+}
