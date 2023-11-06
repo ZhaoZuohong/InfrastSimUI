@@ -1,6 +1,7 @@
 <script setup>
 import { inject } from 'vue'
 const select_operator = inject('select_operator')
+const change_product = inject('change_product')
 const facility_state = inject('facility_state')
 </script>
 
@@ -32,7 +33,7 @@ const facility_state = inject('facility_state')
     </div>
     <n-button @click="select_operator = true">进驻干员</n-button>
     <n-button>无人机加速</n-button>
-    <n-button>变更产物</n-button>
+    <n-button @click="change_product = true">变更产物</n-button>
     <n-button>收取产物</n-button>
   </div>
 </template>

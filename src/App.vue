@@ -28,6 +28,7 @@ const active_facility = inject('active_facility')
     <welcome-page />
     <construction-mode />
     <select-operator />
+    <change-product />
   </n-config-provider>
 </template>
 
