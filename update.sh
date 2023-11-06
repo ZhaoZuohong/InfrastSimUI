@@ -27,9 +27,8 @@ if [ "$LAST_RUNID" != "$LATEST_RUN" ]; then
     rm tmp/.stamp
   fi
   gh run download "$LATEST_RUN" -R "$REPO_OWNER/$REPO_NAME" -n "$ARTIFACT_NAME" -D tmp
-  rm -r public/assets/_framework
   rm -r src/wasm
-  cp -r tmp/_framework public/assets/_framework
+  cp -r tmp/_framework/* public/assets/
   cp -r tmp/_framework src/wasm
 
   # 保存最新的运行号到文件中
