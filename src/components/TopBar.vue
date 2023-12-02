@@ -15,6 +15,20 @@ function collect_all() {
   simulator.value.collect_all()
   state.value = simulator.value.get_data_for_mower()
 }
+function download() {
+  const data = JSON.stringify(simulator.value.get_data());
+  const blob = new Blob([data], { type: 'text/json' });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'infrast.json';
+  document.body.appendChild(link);
+
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 </script>
 
 <template>
@@ -27,7 +41,7 @@ function collect_all() {
       <n-button @click="simulate(simulate_minutes)">运行</n-button>
       <n-button @click="simulate(60 * 4)">运行4小时</n-button>
       <n-button @click="simulate(60 * 24)">运行1天</n-button>
-      <n-button>下载</n-button>
+      <n-button @click="download">下载</n-button>
     </div>
     <div>
       <n-button>收益统计</n-button>
@@ -50,7 +64,7 @@ function collect_all() {
   justify-content: space-between;
   padding: 0 24px;
 
-  & > div {
+  &>div {
     display: flex;
     align-items: center;
     gap: 6px;
