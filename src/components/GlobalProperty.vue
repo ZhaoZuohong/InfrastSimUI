@@ -41,6 +41,13 @@ const translate_dict = {
               <td>{{ v.value }} {{ format_details(v, translate_dict) }}</td>
             </tr>
           </template>
+          <!--暂时放在这-->
+          <template v-for="(amount, name) in state['materials']" :key="name">
+            <tr v-if="amount != 0" v-show="show_all">
+              <td>{{ name }}</td>
+              <td>{{ amount }}</td>
+            </tr>
+          </template>
         </table>
       </n-card>
   </n-config-provider>
