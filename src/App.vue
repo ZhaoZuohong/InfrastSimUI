@@ -29,6 +29,7 @@ const active_facility = inject('active_facility')
     <construction-mode />
     <select-operator />
     <change-product />
+    <facility-use-drone />
   </n-config-provider>
 </template>
 

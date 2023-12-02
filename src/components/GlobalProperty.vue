@@ -1,61 +1,48 @@
 <script setup>
 import { darkTheme } from 'naive-ui'
 import { inject, ref } from 'vue'
+import { format_details } from "@/utils/display"
 const state = inject('state')
 const show_all = ref(false)
 
-function translate(name) {
-  const dictionary = {
-    GlobalTradingEffiency: '全局贸易加成',
-    GlobalManufacturingEffiency: '全局制造加成',
-    common: '中枢'
-  }
-
-  if (name in dictionary) {
-    return dictionary[name]
-  }
-  return name
-}
-
-function format_value(v) {
-  let details = ''
-  if (v.details) {
-    details =
-      '（' +
-      v.details
-        .map((detail) => `${translate(detail.tag)}${detail.value > 0 ? '+' : ''}${detail.value}`)
-        .join(' ') +
-      '）'
-  }
-  return v.value + details
+const display_props = {
+  'drones-efficiency': '无人机生产效率',
+  'office-efficiency': '办公室效率',
+  'manufacturing-efficiency': '制造站总效率',
+  'trading-efficiency': '贸易站总效率',
+} 
+const translate_dict = {
+  'common': '中枢'
 }
 </script>
 
 <template>
   <n-config-provider :theme="darkTheme">
-    <n-card
-      :bordered="false"
-      content-style="padding: 2px 6px"
-      @mouseenter="show_all = true"
-      @mouseleave="show_all = false"
-    >
-      <table>
-        <tr>
-          <td>无人机数量</td>
-          <td>{{ state.drones }}</td>
-        </tr>
-        <tr v-show="show_all">
-          <td>无人机效率</td>
-          <td>{{ state['drones-efficiency'].toFixed(2) }}</td>
-        </tr>
-        <template v-for="(v, name) in state['global-props']" :key="name">
-          <tr v-if="v.value != 0" v-show="show_all">
-            <td>{{ translate(name) }}</td>
-            <td>{{ format_value(v) }}</td>
+      <n-card
+        :bordered="false"
+        content-style="padding: 2px 6px"
+        @mouseenter="show_all = true"
+        @mouseleave="show_all = false"
+      >
+        <table>
+          <tr>
+            <td>无人机数量</td>
+            <td>{{ Math.floor(state.drones) }}</td>
           </tr>
-        </template>
-      </table>
-    </n-card>
+          <template v-for="(name, key) in display_props" :key="name">
+            <tr v-if="key in state">
+              <td>{{ name }}</td>
+              <td>{{ state[key].toFixed(2) }}</td>
+            </tr>
+          </template>
+          <template v-for="(v, propName) in state['global-props']" :key="propName">
+            <tr v-if="v.value != 0" v-show="show_all">
+              <td>{{ propName }}</td>
+              <td>{{ v.value }} {{ format_details(v, translate_dict) }}</td>
+            </tr>
+          </template>
+        </table>
+      </n-card>
   </n-config-provider>
 </template>
 
@@ -64,7 +51,7 @@ function format_value(v) {
   position: absolute;
   top: 12px;
   left: 12px;
-  width: 120px;
+  width: 160px;
   opacity: 0.3;
   transition: opacity 200ms;
   z-index: 200;

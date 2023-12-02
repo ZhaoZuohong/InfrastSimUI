@@ -27,6 +27,8 @@ if [ "$LAST_RUNID" != "$LATEST_RUN" ]; then
     rm tmp/.stamp
   fi
   gh run download "$LATEST_RUN" -R "$REPO_OWNER/$REPO_NAME" -n "$ARTIFACT_NAME" -D tmp
+  # 为 dotnet.runtime.js 中的 import 添加 /* @vite-ignore */
+  sed -i 's|import(\([^)]*\))|import(/* @vite-ignore */ \1)|g' tmp/_framework/dotnet.runtime.js
   rm -r src/wasm
   cp -r tmp/_framework/* public/assets/
   cp -r tmp/_framework src/wasm

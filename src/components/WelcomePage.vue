@@ -25,7 +25,7 @@ const instance_options = [
     disabled: true
   }
 ]
-const initial = ref('blank')
+const initial = ref('preset')
 const initial_options = [
   {
     label: '从空白开始',

@@ -1,10 +1,14 @@
 <script setup>
 import { inject, computed, ref, watch } from 'vue'
+import { match } from 'pinyin-pro'
+import { _ } from 'lodash'
+import { facility_name_list } from '@/utils/display'
 
 const select_operator = inject('select_operator')
-const state = inject('state')
 const active_facility = inject('active_facility')
 const facility_state = inject('facility_state')
+const state = inject('state')
+const simulator = inject('simulator')
 
 const operator_list = computed(() => {
   const x = state.value.operators.map((x) => ({
@@ -16,7 +20,6 @@ const operator_list = computed(() => {
 })
 
 const operators = ref([])
-import { facility_name_list } from '@/utils/display'
 
 watch(select_operator, (new_value) => {
   if (new_value) {
@@ -28,23 +31,25 @@ watch(
   operators,
   (new_value) => {
     const length = new_value.length
-    const selected = new_value.filter((x) => x)
+    const selected = new_value.filter((x) => x) // TODO
     const result = selected.concat(Array(length - selected.length).fill(''))
-    if (JSON.stringify(result) != JSON.stringify(new_value)) {
+    if (_.isEqual(result, new_value)) {
       operators.value = result
     }
   },
   { deep: true }
 )
 
-const simulator = inject('simulator')
-
 function operate() {
   select_operator.value = false
   simulator.value.set_facility_state(active_facility.value, {
-    'operators-force-replace': operators.value.filter((x) => x)
+    'operators': operators.value.filter((x) => x)
   })
   state.value = simulator.value.get_data_for_mower()
+}
+
+function pinyinFilter(input, src) {
+  return match(src.label, input);
 }
 </script>
 
@@ -72,7 +77,8 @@ function operate() {
             {{ facility_state.operators[idx] ? facility_state.operators[idx].name : '（无）' }}
           </td>
           <td>
-            <n-select v-model:value="operators[idx]" :options="operator_list" filterable />
+            <n-select v-model:value="operators[idx]" :options="operator_list" :filter="pinyinFilter"
+            filterable />
           </td>
         </tr>
       </tbody>

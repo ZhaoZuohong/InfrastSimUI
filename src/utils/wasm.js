@@ -32,15 +32,23 @@ export class WasmSimulator {
     return this.promise_ready
   }
 
+  simulate(seconds) {
+    this.service.Simulate(this.id, seconds)
+  }
+
   get_data() {
     return JSON.parse(this.service.GetData(this.id))
   }
 
   get_data_for_mower() {
-    return JSON.parse(this.service.GetDataForMower(this.id))
+    return JSON.parse(this.service.GetData(this.id, true))
   }
 
   set_facility_state(facility, state) {
     this.service.SetFacilityState(this.id, facility, JSON.stringify(state))
+  }
+
+  collect_all() {
+    this.service.CollectAll(this.id)
   }
 }
