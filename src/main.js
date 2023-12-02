@@ -64,6 +64,7 @@ app.provide('active_facility', active_facility)
 app.provide('construction_mode', ref(false))
 app.provide('select_operator', ref(false))
 app.provide('change_product', ref(false))
+app.provide('use_drone', ref(false))
 
 import { get_left_index } from '@/utils/display'
 const facility_state = computed(() => {
