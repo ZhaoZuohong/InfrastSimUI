@@ -113,7 +113,8 @@ export function translate(name, dict) {
     base: '设施',
     'control-center': '中枢',
     'dorm-vip': 'VIP',
-    'dorm-extra': '宿舍氛围和群回宿管',
+    'dorm-atmosphere': '宿舍氛围',
+    'dorm-extra': '群回宿管',
     'control-center-mod': '控制中枢',
     'control-center-extra': '控制中枢技能',
   }

@@ -1,7 +1,7 @@
 <script setup>
 import { inject, computed, ref, watch } from 'vue'
 import { match } from 'pinyin-pro'
-import { _ } from 'lodash'
+// import { _ } from 'lodash'
 import { facility_name_list } from '@/utils/display'
 
 const select_operator = inject('select_operator')
@@ -27,18 +27,18 @@ watch(select_operator, (new_value) => {
   }
 })
 
-watch(
-  operators,
-  (new_value) => {
-    const length = new_value.length
-    const selected = new_value.filter((x) => x) // TODO
-    const result = selected.concat(Array(length - selected.length).fill(''))
-    if (_.isEqual(result, new_value)) {
-      operators.value = result
-    }
-  },
-  { deep: true }
-)
+// watch(
+//   operators,
+//   (new_value) => {
+//     const length = new_value.length
+//     const selected = new_value.filter((x) => x) // TODO
+//     const result = selected.concat(Array(length - selected.length).fill(''))
+//     if (_.isEqual(result, new_value)) {
+//       operators.value = result
+//     }
+//   },
+//   { deep: true }
+// )
 
 function operate() {
   select_operator.value = false
