@@ -10,10 +10,10 @@ const simulator = inject('simulator')
 const state = inject('state')
 
 function get_global_eff() {
-  if (facility_state.type === 'Manufacturing') {``
-    return state['global-props']['全局制造站效率'].value ?? 0.0
-  } else if (facility_state.type === 'Trading') {
-    return state['global-props']['全局贸易站效率'].value ?? 0.0
+  if (facility_state.value.type === 'Manufacturing') {
+    return state.value['global-props']['全局制造站效率'].value ?? 0.0
+  } else if (facility_state.value.type === 'Trading') {
+    return state.value['global-props']['全局贸易站效率'].value ?? 0.0
   }
   return 0.0
 }
@@ -53,7 +53,7 @@ function collect() {
           {{ format_details(facility_state['capacity-details'], undefined, (v) => v.toFixed(0)) }}
         </div>
         <div>
-          效率：{{ totalEfficiency }}（工作站{{ facility_state['base-efficiency'] }}+干员{{
+          效率：{{ totalEfficiency.toFixed(2) }}（工作站{{ facility_state['base-efficiency'] }}+干员{{
             facility_state['operators-efficiency']
           }}<template v-if="get_global_eff() != 0.0">+全局{{get_global_eff()}}</template>）
         </div>
