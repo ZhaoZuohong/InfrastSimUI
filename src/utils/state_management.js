@@ -1,5 +1,5 @@
 import { WasmSimulator } from '@/utils/wasm'
-import { shallowRef, computed } from 'vue'
+import { ref, shallowRef, computed } from 'vue'
 export class CheckPoint {
   name
   data
@@ -15,7 +15,7 @@ export class CheckPoint {
 }
 export function create_cp(simu) {
   const data = simu.get_data()
-  return CheckPoint(data.time, data, simu.prev_cp, simu.scripts)
+  return new CheckPoint(Date.now(), data, simu.prev_cp, simu.scripts)
 }
 
 export class StateManager {
@@ -30,38 +30,43 @@ export class StateManager {
   constructor() {
     this.cur_simu = shallowRef({})
     this.cur_cp = computed(() => this.cur_simu.value.cp)
+    this.cp_list = ref([])
+    this.cp_simus = ref({})
   }
 
   init(simu) {
     const data = simu.get_data()
-    const init_cp = new CheckPoint(data.time, data, null, '')
+    const init_cp = new CheckPoint('初始', data, null, '')
     simu.cp = init_cp
 
-    this.cp_list = [init_cp]
-    this.cp_simus = {}
-    this.cp_simus[init_cp] = []
+    this.cp_list.value.push(init_cp)
+    this.cp_simus.value[init_cp.name] = []
     this.switch_simu(simu)
   }
 
   switch_simu(simu) {
+    if (this.cur_simu == simu) return
+    
     this.cur_simu.value.on_script_executed = null
     simu.on_script_executed = this.on_script_executed
 
-    if (this.cp_simus[simu.cp].indexOf(simu) === -1) {
-      this.cp_simus[simu.cp].push(simu)
+    if (this.cp_simus.value[simu.cp.name].indexOf(simu) === -1) {
+      this.cp_simus.value[simu.cp.name].push(simu)
     }
     this.cur_simu.value = simu
+    this.on_script_executed && this.on_script_executed(simu)
   }
   async switch_cp(cp) {
-    if (this.cp_list.indexOf(cp) === -1) {
-      this.cp_list.push(cp)
-      this.cp_simus[cp] = []
+    if (this.cp_list.value.indexOf(cp) === -1) {
+      this.cp_list.value.push(cp)
+      this.cp_simus.value[cp.name] = []
     }
-    var simu = await new WasmSimulator(cp.data).ready()
+    const simu = await new WasmSimulator(cp.data).ready()
+    simu.cp = cp
     this.switch_simu(simu)
   }
   create_cp() {
-    var new_cp = create_cp(this.cur_simu.value)
+    const new_cp = create_cp(this.cur_simu.value)
     this.switch_cp(new_cp)
   }
 }

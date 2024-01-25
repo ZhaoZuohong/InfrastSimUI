@@ -26,6 +26,7 @@ export class WasmSimulator {
     const config = getConfig()
     const exports = await getAssemblyExports(config.mainAssemblyName)
     this.service = exports.InfrastSim.Wasm.SimulatorService
+    if (data && typeof data !== 'string') data = JSON.stringify(data)
     this.id = data ? this.service.CreateWithData(data) : this.service.Create()
     this.scripts = ''
 

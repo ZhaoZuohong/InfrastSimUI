@@ -15,7 +15,6 @@ const active_facility = inject('active_facility')
           <state-list />
         </n-scrollbar>
         <live-script-editor style="flex: 2;" />
-        <state-action />
       </div>
       <div class="main">
         <n-scrollbar>
@@ -70,11 +69,6 @@ body {
   border-right: 1px solid rgb(239, 239, 245);
   display: flex;
   flex-direction: column;
-}
-
-.state-action {
-  flex: none;
-  height: auto;
 }
 
 .main {
