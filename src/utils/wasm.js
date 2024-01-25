@@ -4,6 +4,9 @@ export class WasmSimulator {
   promise_ready
   id
   service
+  cp
+  scripts
+  on_script_executed
 
   constructor(data) {
     this.promise_ready = this.#init(data)
@@ -24,6 +27,7 @@ export class WasmSimulator {
     const exports = await getAssemblyExports(config.mainAssemblyName)
     this.service = exports.InfrastSim.Wasm.SimulatorService
     this.id = data ? this.service.CreateWithData(data) : this.service.Create()
+    this.scripts = ''
 
     return this
   }
@@ -32,27 +36,71 @@ export class WasmSimulator {
     return this.promise_ready
   }
 
+  execute_script(script) {
+    this.scripts = this.scripts + script + '\n'
+    this.service.ExecuteScript(this.id, script)
+    if (this.on_script_executed) this.on_script_executed(this)
+  }
+
   simulate(seconds) {
-    this.service.Simulate(this.id, seconds)
+    this.execute_script(`simulate ${seconds}`)
   }
 
-  get_data() {
-    return JSON.parse(this.service.GetData(this.id))
+  get_data(detailed = false) {
+    return JSON.parse(this.service.GetData(this.id, detailed))
   }
 
-  get_data_for_mower() {
-    return JSON.parse(this.service.GetData(this.id, true))
+  set_op(op, upgraded, mood) {
+    if (!upgraded && upgraded != 0 || typeof(upgraded) === 'string' && upgraded.trim() === '') {
+      upgraded = '_'
+    }
+    if (!mood && mood != 0 || typeof(mood) === 'string' && mood.trim() === '') {
+      mood = '_'
+    }
+    this.execute_script(`setOpState ${op} ${upgraded} ${mood}`)
   }
 
   set_facility_state(facility, state) {
-    this.service.SetFacilityState(this.id, facility, JSON.stringify(state))
+    var script = `with ${facility}`
+    const append = function(content) {
+      script = script + '; ' + content
+    }
+
+    if ('type' in state) {
+      append(`setFac ${state['type']}`);
+    }
+    if ('destroy' in state) {
+      append('setFac _');
+    }
+    if ('level' in state) {
+      append(`setLevel ${state['level']}`);
+    }
+    if ('strategy' in state) {
+      append(`setStrategy ${state['strategy']}`);
+    }
+    if ('product' in state) {
+      append(`setProduct ${state['product']}`);
+    }
+    if ('operators' in state) {
+      append(`setOps ${state['operators'].join(' ')}`);
+    }
+    if ('drones' in state) {
+      append(`useDrones ${state['drones']}`);
+    }
+    if ('collect' in state) {
+      append(`collect ${state['collect']}`);
+    }
+
+    this.execute_script(script)
+    // this.service.SetFacilityState(this.id, facility, JSON.stringify(state))
   }
 
   set_facilities_state(state) {
+    // 目前的代码中，只有载入预设的时候会使用该代码，故暂不进行脚本化改造
     this.service.SetFacilitiesState(this.id, JSON.stringify(state))
   }
 
   collect_all() {
-    this.service.CollectAll(this.id)
+    this.execute_script('collectAll')
   }
 }

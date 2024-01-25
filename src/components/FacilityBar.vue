@@ -37,7 +37,6 @@ function collect() {
   simulator.value.set_facility_state(active_facility.value, {
       'collect': 0
   })
-  state.value = simulator.value.get_data_for_mower()
 }
 
 </script>
@@ -54,7 +53,7 @@ function collect() {
         </div>
         <div>
           效率：{{ totalEfficiency.toFixed(2) }}（工作站{{ facility_state['base-efficiency'] }}+干员{{
-            facility_state['operators-efficiency']
+            facility_state['operators-efficiency'].toFixed(2)
           }}<template v-if="get_global_eff() != 0.0">+全局{{get_global_eff()}}</template>）
         </div>
         <template v-if="facility_state.type === 'Manufacturing'">

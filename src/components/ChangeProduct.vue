@@ -6,7 +6,6 @@ const change_product = inject('change_product')
 const active_facility = inject('active_facility')
 const facility_state = inject('facility_state')
 const simulator = inject('simulator')
-const state = inject('state')
 
 const new_product = ref('')
 const product_list = computed(() => get_product_list(facility_state.value))
@@ -32,7 +31,6 @@ function operate() {
       'strategy': new_product.value
     })
   }
-  state.value = simulator.value.get_data_for_mower()
 }
 </script>
 

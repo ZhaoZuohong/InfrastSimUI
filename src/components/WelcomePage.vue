@@ -99,7 +99,7 @@ const links = {
 }
 
 import { WasmSimulator } from '@/utils/wasm'
-const simulator = inject('simulator')
+const state_manager = inject('state_manager')
 const state = inject('state')
 const axios = inject('axios')
 
@@ -132,16 +132,18 @@ function handleFileChange(fileList) {
 
 async function enter() {
   loading.value = true
+  var simu
   if (initial.value == 'import') {
-    simulator.value = await new WasmSimulator(upload_data).ready()
+    simu = await new WasmSimulator(upload_data).ready()
   } else {
-    simulator.value = await new WasmSimulator().ready()
+    simu = await new WasmSimulator().ready()
   }
   if (initial.value == 'preset') {
     const { data } = await axios.get(`/presets/${preset.value}.json`)
-    simulator.value.set_facilities_state(data)
+    simu.set_facilities_state(data)
   }
-  state.value = simulator.value.get_data_for_mower()
+  state_manager.init(simu)
+  state.value = simu.get_data(true)
   loading.value = false
   show.value = false
 }

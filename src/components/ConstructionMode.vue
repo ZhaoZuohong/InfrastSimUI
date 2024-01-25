@@ -117,10 +117,12 @@ function operate() {
         simulator.value.set_facility_state(facility, {
           destroy: null
         })
-        simulator.value.set_facility_state(facility, {
-          type: operations.value[facility].after.type,
-          level: operations.value[facility].after.level
-        })
+        if (operations.value[facility].after.type !== '') {
+          simulator.value.set_facility_state(facility, {
+            type: operations.value[facility].after.type,
+            level: operations.value[facility].after.level
+          })
+        }
       }
     } else {
       simulator.value.set_facility_state(facility, {
@@ -128,7 +130,6 @@ function operate() {
       })
     }
   }
-  state.value = simulator.value.get_data_for_mower()
 }
 </script>
 

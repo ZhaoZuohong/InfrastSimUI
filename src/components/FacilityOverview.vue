@@ -63,7 +63,7 @@ import { facility_name_list } from '@/utils/display'
   display: grid;
   gap: 8px;
   grid-template-rows: repeat(5, 75px);
-  grid-template-columns: 1fr repeat(3, 175px) 277px 175px 1fr;
+  grid-template-columns: 1.5fr repeat(3, 175px) 277px 175px 1fr;
   margin: 16px 0;
 }
 

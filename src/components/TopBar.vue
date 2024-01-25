@@ -2,18 +2,16 @@
 import { inject, ref } from 'vue'
 
 const construction_mode = inject('construction_mode')
-const state = inject('state')
+const config_operators = inject('config_operators')
 const simulator = inject('simulator')
 
 const simulate_minutes = ref(1)
 
 function simulate(minutes) {
   simulator.value.simulate(minutes * 60)
-  state.value = simulator.value.get_data_for_mower()
 }
 function collect_all() {
   simulator.value.collect_all()
-  state.value = simulator.value.get_data_for_mower()
 }
 function download() {
   const data = JSON.stringify(simulator.value.get_data());
@@ -46,9 +44,9 @@ function download() {
     <div>
       <n-button>收益统计</n-button>
       <n-button @click="construction_mode = true">建造模式</n-button>
-      <n-button>配置干员</n-button>
-      <n-button>理智充无人机</n-button>
-      <n-button>撤下干员</n-button>
+      <n-button @click="config_operators = true">配置干员</n-button>
+      <!-- <n-button>理智充无人机</n-button> -->
+      <!-- <n-button>撤下干员</n-button> -->
       <n-button @click="collect_all">收取全部产物</n-button>
     </div>
   </div>

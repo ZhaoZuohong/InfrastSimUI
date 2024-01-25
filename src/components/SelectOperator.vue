@@ -45,7 +45,6 @@ function operate() {
   simulator.value.set_facility_state(active_facility.value, {
     'operators': operators.value.filter((x) => x)
   })
-  state.value = simulator.value.get_data_for_mower()
 }
 
 function pinyinFilter(input, src) {

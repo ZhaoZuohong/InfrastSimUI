@@ -11,9 +11,10 @@ const active_facility = inject('active_facility')
         <top-bar />
       </div>
       <div class="sidebar">
-        <n-scrollbar>
+        <n-scrollbar style="flex: 1;">
           <state-list />
         </n-scrollbar>
+        <live-script-editor style="flex: 2;" />
         <state-action />
       </div>
       <div class="main">
@@ -30,6 +31,7 @@ const active_facility = inject('active_facility')
     <select-operator />
     <change-product />
     <facility-use-drone />
+    <config-operators />
   </n-config-provider>
 </template>
 
@@ -51,7 +53,7 @@ body {
   overflow: hidden;
   display: grid;
   grid-template-rows: 48px 1fr;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 24em 1fr;
   grid-template-areas:
     'header header'
     'sidebar main';
@@ -70,6 +72,11 @@ body {
   flex-direction: column;
 }
 
+.state-action {
+  flex: none;
+  height: auto;
+}
+
 .main {
   grid-area: main;
   overflow: hidden;
@@ -78,9 +85,5 @@ body {
 
 .n-divider {
   margin: 0;
-}
-
-.n-scrollbar {
-  height: 100%;
 }
 </style>

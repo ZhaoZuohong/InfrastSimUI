@@ -1,10 +1,8 @@
 <template>
   <div class="action-bar">
-    <div class="delete-label">删除</div>
-    <n-button>更早</n-button>
-    <n-button>当前</n-button>
-    <n-button>更晚</n-button>
-    <n-button>全部</n-button>
+    <n-select></n-select>
+    <n-button>创建分支</n-button>
+    <n-button>执行代码</n-button>
   </div>
 </template>
 
@@ -18,11 +16,4 @@
   border-top: 1px solid rgb(239, 239, 245);
 }
 
-.n-button {
-  padding: 0 4px;
-}
-
-.delete-label {
-  margin-right: 4px;
-}
 </style>
