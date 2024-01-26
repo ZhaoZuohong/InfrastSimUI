@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject } from 'vue'
+import { ref, inject, computed } from 'vue'
 const show = ref(true)
 const run = ref('wasm')
 const run_options = [
@@ -37,8 +37,7 @@ const initial_options = [
   },
   {
     label: '从本地导入状态',
-    value: 'import',
-    disabled: true
+    value: 'import'
   }
 ]
 
@@ -100,23 +99,51 @@ const links = {
 }
 
 import { WasmSimulator } from '@/utils/wasm'
-const simulator = inject('simulator')
-
+const state_manager = inject('state_manager')
 const state = inject('state')
-const loading = ref(false)
-
 const axios = inject('axios')
+
+const loading = ref(false)
+const upload_success = ref(false)
+var upload_data = null
+const canEnter = computed(() => loading.value || (initial.value == 'import' && !upload_success.value))
+
+function handleFileChange(fileList) {
+  const fileInfo = fileList[0];
+
+  if (fileInfo && fileInfo.file instanceof File) {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      try {
+        JSON.parse(e.target.result);
+        upload_success.value = true;
+        upload_data = e.target.result;
+      } catch (error) {
+        upload_success.value = false;
+      }
+    };
+
+    reader.readAsText(fileInfo.file);
+  } else {
+    upload_success.value = false;
+  }
+}
 
 async function enter() {
   loading.value = true
-  simulator.value = await new WasmSimulator().ready()
+  var simu
+  if (initial.value == 'import') {
+    simu = await new WasmSimulator(upload_data).ready()
+  } else {
+    simu = await new WasmSimulator().ready()
+  }
   if (initial.value == 'preset') {
     const { data } = await axios.get(`/presets/${preset.value}.json`)
-    for (const [facility, state] of Object.entries(data)) {
-      simulator.value.set_facility_state(facility, state)
-    }
+    simu.set_facilities_state(data)
   }
-  state.value = simulator.value.get_data_for_mower()
+  state_manager.init(simu)
+  state.value = simu.get_data(true)
   loading.value = false
   show.value = false
 }
@@ -124,16 +151,13 @@ async function enter() {
 
 <template>
   <n-modal v-model:show="show" :mask-closable="false">
-    <n-card
-      class="card"
-      :content-style="{
-        display: 'flex',
-        'flex-direction': 'column',
-        'justify-content': 'center',
-        'align-items': 'center',
-        gap: '8px'
-      }"
-    >
+    <n-card class="card" :content-style="{
+      display: 'flex',
+      'flex-direction': 'column',
+      'justify-content': 'center',
+      'align-items': 'center',
+      gap: '8px'
+    }">
       <n-h1>基建模拟器</n-h1>
       <n-form label-placement="left" label-width="80" :show-feedback="false">
         <n-form-item label="运行方式">
@@ -152,7 +176,7 @@ async function enter() {
           <n-select v-model:value="initial" :options="initial_options" />
         </n-form-item>
         <n-form-item label="文件" v-if="initial == 'import'">
-          <n-upload>
+          <n-upload :on-update:file-list="handleFileChange" :max="1">
             <n-upload-dragger>点击或者拖拽上传</n-upload-dragger>
           </n-upload>
         </n-form-item>
@@ -160,7 +184,7 @@ async function enter() {
           <n-cascader v-model:value="preset" :options="presets" check-strategy="child" />
         </n-form-item>
       </n-form>
-      <n-button type="primary" @click="enter" :loading="loading" :disabled="loading">
+      <n-button type="primary" @click="enter" :loading="loading" :disabled="canEnter">
         进入基建
       </n-button>
       <n-divider />

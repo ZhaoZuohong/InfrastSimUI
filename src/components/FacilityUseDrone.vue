@@ -3,7 +3,6 @@ import { ref, inject } from 'vue'
 const use_drone = inject('use_drone')
 const active_facility = inject('active_facility')
 const simulator = inject('simulator')
-const state = inject('state')
 
 const amount = ref(1)
 
@@ -12,7 +11,6 @@ function operate() {
   simulator.value.set_facility_state(active_facility.value, {
     'drone': amount.value
   })
-  state.value = simulator.value.get_data_for_mower()
 }
 </script>
 

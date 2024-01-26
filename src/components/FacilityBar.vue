@@ -9,18 +9,23 @@ const facility_state = inject('facility_state')
 const simulator = inject('simulator')
 const state = inject('state')
 
-const isWorkingStation = computed(() =>
-  facility_state.value.type === 'Manufacturing' || facility_state.value.type === 'Trading'
-)
-
 function get_global_eff() {
-  if (facility_state.type === 'Manufacturing') {``
-    return state['global-props']['全局制造站效率'].value ?? 0.0
-  } else if (facility_state.type === 'Trading') {
-    return state['global-props']['全局贸易站效率'].value ?? 0.0
+  if (facility_state.value.type === 'Manufacturing') {
+    return state.value['global-props']['全局制造站效率'].value ?? 0.0
+  } else if (facility_state.value.type === 'Trading') {
+    return state.value['global-props']['全局贸易站效率'].value ?? 0.0
   }
   return 0.0
 }
+
+const isWorkingStation = computed(() =>
+  ['Manufacturing', 'Trading'].includes(facility_state.value.type)
+)
+const totalEfficiency = computed(() => {
+  return facility_state.value['base-efficiency'] +
+         facility_state.value['operators-efficiency'] +
+         get_global_eff();
+});
 
 function get_remains() {
   const seconds = facility_state.value.remains;
@@ -32,7 +37,6 @@ function collect() {
   simulator.value.set_facility_state(active_facility.value, {
       'collect': 0
   })
-  state.value = simulator.value.get_data_for_mower()
 }
 
 </script>
@@ -48,10 +52,8 @@ function collect() {
           {{ format_details(facility_state['capacity-details'], undefined, (v) => v.toFixed(0)) }}
         </div>
         <div>
-          效率：{{ facility_state['base-efficiency']
-            + facility_state['operators-efficiency']
-            + get_global_eff() }}（工作站{{ facility_state['base-efficiency'] }}+干员{{
-            facility_state['operators-efficiency']
+          效率：{{ totalEfficiency.toFixed(2) }}（工作站{{ facility_state['base-efficiency'] }}+干员{{
+            facility_state['operators-efficiency'].toFixed(2)
           }}<template v-if="get_global_eff() != 0.0">+全局{{get_global_eff()}}</template>）
         </div>
         <template v-if="facility_state.type === 'Manufacturing'">

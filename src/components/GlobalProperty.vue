@@ -58,7 +58,7 @@ const translate_dict = {
   position: absolute;
   top: 12px;
   left: 12px;
-  width: 160px;
+  width: 180px;
   opacity: 0.3;
   transition: opacity 200ms;
   z-index: 200;
